@@ -118,7 +118,7 @@ class FavoritesRepository(context: Context) {
     }
 
     private fun normalizeAudioUrl(url: String): String {
-        return url
+        return com.soul.neurokaraoke.data.api.EndpointRouter.route(url, china = false)
             .removePrefix("https://storage.neurokaraoke.com/")
             .removePrefix("http://storage.neurokaraoke.com/")
     }

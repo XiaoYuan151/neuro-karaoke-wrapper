@@ -16,6 +16,9 @@ export class TrayManager {
   sleepEndTime?: number;
   sleepTickInterval?: NodeJS.Timeout;
   
+  chinaEndpoints = false;
+  onToggleChinaEndpoints?: (enabled: boolean) => void;
+
   onToggleCloseToTray?: CloseToTrayFunction;
   onSwitchSite?: ChangeSiteFunction;
   onRefresh?: VoidFunction;
@@ -119,6 +122,12 @@ export class TrayManager {
             }
           ] : []) as any
         ]
+      },
+      {
+        type: 'checkbox',
+        label: 'Use China endpoints (.com.cn)',
+        checked: this.chinaEndpoints,
+        click: (item) => this.onToggleChinaEndpoints?.(item.checked),
       },
       {
         label: 'Refresh',

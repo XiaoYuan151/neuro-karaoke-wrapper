@@ -184,7 +184,7 @@ fun SoundbiteScreen(modifier: Modifier = Modifier) {
         } else {
             try {
                 mediaPlayer.reset()
-                mediaPlayer.setDataSource(soundbite.audioUrl)
+                mediaPlayer.setDataSource(com.soul.neurokaraoke.data.api.EndpointRouter.route(soundbite.audioUrl))
                 mediaPlayer.prepareAsync()
                 mediaPlayer.setOnPreparedListener { it.start() }
                 playingSoundbiteId = soundbite.id

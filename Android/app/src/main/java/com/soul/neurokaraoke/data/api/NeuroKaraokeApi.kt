@@ -10,7 +10,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 
 data class CoverDistribution(
     val totalSongs: Int,
@@ -93,7 +92,7 @@ class NeuroKaraokeApi {
         }
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/songs/playCount/$songId")
+            val url = EndpointRouter.url("$API_URL/api/songs/playCount/$songId")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "PUT"
             connection.connectTimeout = 10000
@@ -120,7 +119,7 @@ class NeuroKaraokeApi {
 
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$BASE_URL/public/playlist/$playlistId")
+            val url = EndpointRouter.url("$BASE_URL/public/playlist/$playlistId")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000
@@ -223,7 +222,7 @@ class NeuroKaraokeApi {
     suspend fun fetchPlaylistInfo(playlistId: String): Result<ApiPlaylistInfo> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$BASE_URL/public/playlist/$playlistId")
+            val url = EndpointRouter.url("$BASE_URL/public/playlist/$playlistId")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000
@@ -299,7 +298,7 @@ class NeuroKaraokeApi {
     suspend fun fetchOfficialSetlists(): Result<List<Playlist>> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/playlists?startIndex=0&pageSize=200&isSetlist=True&year=0")
+            val url = EndpointRouter.url("$API_URL/api/playlists?startIndex=0&pageSize=200&isSetlist=True&year=0")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 15000
@@ -383,7 +382,7 @@ class NeuroKaraokeApi {
     suspend fun fetchPublicPlaylists(): Result<List<ApiPublicPlaylist>> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/playlist/public?startIndex=0&pageSize=500")
+            val url = EndpointRouter.url("$API_URL/api/playlist/public?startIndex=0&pageSize=500")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 15000
@@ -468,7 +467,7 @@ class NeuroKaraokeApi {
     suspend fun fetchCoverDistribution(): Result<CoverDistribution> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/stats/cover-distribution")
+            val url = EndpointRouter.url("$API_URL/api/stats/cover-distribution")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000
@@ -503,7 +502,7 @@ class NeuroKaraokeApi {
     suspend fun fetchArtists(): Result<List<Artist>> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/artists")
+            val url = EndpointRouter.url("$API_URL/api/artists")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000
@@ -569,7 +568,7 @@ class NeuroKaraokeApi {
     suspend fun fetchAllSongs(): Result<List<AllSongEntry>> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/songs")
+            val url = EndpointRouter.url("$API_URL/api/songs")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "POST"
             connection.setRequestProperty("Content-Type", "application/json")
@@ -650,7 +649,7 @@ class NeuroKaraokeApi {
     suspend fun fetchTrendingSongs(days: Int = 7): Result<List<ApiSong>> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/explore/trendings?days=$days")
+            val url = EndpointRouter.url("$API_URL/api/explore/trendings?days=$days")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000
@@ -807,7 +806,7 @@ class NeuroKaraokeApi {
         // Extract the path portion from the audioUrl:
         // audioUrl: "https://storage.neurokaraoke.com/audio/X.mp3"
         // absolutePath in API: "audio/X.mp3"
-        val path = audioUrl
+        val path = EndpointRouter.route(audioUrl, china = false)
             .removePrefix("https://storage.neurokaraoke.com/")
             .removePrefix("http://storage.neurokaraoke.com/")
         return songIdMap?.get(path)
@@ -820,7 +819,7 @@ class NeuroKaraokeApi {
     private suspend fun buildSongIdMap() = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/playlists?startIndex=0&pageSize=200&isSetlist=True&year=0")
+            val url = EndpointRouter.url("$API_URL/api/playlists?startIndex=0&pageSize=200&isSetlist=True&year=0")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 15000
@@ -882,7 +881,7 @@ class NeuroKaraokeApi {
     suspend fun fetchSongLyrics(songId: String): Result<List<LyricLine>> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/songs/$songId/lyrics")
+            val url = EndpointRouter.url("$API_URL/api/songs/$songId/lyrics")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 10000

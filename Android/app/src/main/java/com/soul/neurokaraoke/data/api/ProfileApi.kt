@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 
 private const val API_BASE = "https://api.neurokaraoke.com"
 
@@ -73,7 +72,7 @@ object ProfileApi {
 
     private fun <T> fetch(path: String, token: String, parse: (String) -> T): Result<T> {
         return try {
-            val conn = URL("$API_BASE$path").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_BASE$path").openConnection() as HttpURLConnection
             conn.connectTimeout = 15_000
             conn.readTimeout = 15_000
             conn.setRequestProperty("Authorization", "Bearer $token")

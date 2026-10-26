@@ -5,7 +5,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 import java.net.URLEncoder
 
 data class LyricsResult(
@@ -62,7 +61,7 @@ class LyricsApi {
         try {
             val encodedTrack = URLEncoder.encode(trackName, "UTF-8")
             val encodedArtist = URLEncoder.encode(artistName, "UTF-8")
-            val url = URL("$BASE_URL/get?track_name=$encodedTrack&artist_name=$encodedArtist")
+            val url = EndpointRouter.url("$BASE_URL/get?track_name=$encodedTrack&artist_name=$encodedArtist")
 
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
@@ -101,7 +100,7 @@ class LyricsApi {
             // Try with just track name first
             val query = "$trackName $artistName"
             val encodedQuery = URLEncoder.encode(query, "UTF-8")
-            val url = URL("$BASE_URL/search?q=$encodedQuery")
+            val url = EndpointRouter.url("$BASE_URL/search?q=$encodedQuery")
 
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
@@ -205,7 +204,7 @@ class LyricsApi {
                     }
                 })
             }
-            conn = (URL("$NK_API_URL/api/lyrics/translate").openConnection() as HttpURLConnection).apply {
+            conn = (EndpointRouter.url("$NK_API_URL/api/lyrics/translate").openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Authorization", "Bearer $accessToken")
                 setRequestProperty("Content-Type", "application/json")

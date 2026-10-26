@@ -60,7 +60,10 @@ fun TvVideoPlayerScreen(
     LaunchedEffect(Unit) { playerViewModel.pausePlayback() }
 
     val exo = remember(video.id) {
-        ExoPlayer.Builder(context).build().apply {
+        ExoPlayer.Builder(context)
+            .setMediaSourceFactory(androidx.media3.exoplayer.source.DefaultMediaSourceFactory(context)
+                .setDataSourceFactory(com.soul.neurokaraoke.audio.AudioCacheManager.createCacheDataSourceFactory(context, downloadAware = false)))
+            .build().apply {
             setMediaItem(MediaItem.fromUri(video.hlsUrl))
             prepare()
             playWhenReady = true

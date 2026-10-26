@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 import java.net.URLEncoder
 
 data class SoundbiteResponse(
@@ -31,7 +30,7 @@ class SoundbiteApi {
                 urlBuilder.append("&search=${URLEncoder.encode(search, "UTF-8")}")
             }
 
-            val url = URL(urlBuilder.toString())
+            val url = EndpointRouter.url(urlBuilder.toString())
             val connection = url.openConnection() as HttpURLConnection
             connection.connectTimeout = 10_000
             connection.readTimeout = 10_000

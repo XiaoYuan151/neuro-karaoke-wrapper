@@ -168,3 +168,15 @@ Neuro Karaoke is licensed under the **GNU General Public License v3.0** — see
 by Luda, and a Neurolings animation engine ported from Shimeji-ee), so the
 project as a whole is GPL-3.0. Third-party attributions are listed in
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+### China endpoints
+
+On devices with system region set to China (`CN`), API and media requests use
+`<service>.neurokaraoke.com.cn` automatically, including `api`, `idk`, `storage`,
+`images`, and `socket`. This also applies to media URLs returned by the API or
+saved locally. Website and third-party domains keep their existing addresses.
+
+Override this with **Use China endpoints** in Android Settings (phone or TV), or
+**Use China endpoints (.com.cn)** in the desktop tray menu. The choice is saved.
+Android applies changes to new requests; restart playback to switch an active stream.
+The desktop app reloads its website views after changing the setting.

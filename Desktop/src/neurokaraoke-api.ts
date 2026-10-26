@@ -1,4 +1,5 @@
 import * as https from 'https';
+import { routeEndpoint } from './endpoint-router.js';
 
 export type PlaylistData = {
   artCredit: string,
@@ -28,7 +29,7 @@ export default class NeuroKaraokeAPI {
     return new Promise((resolve, reject) => {
       const url = `${this.baseUrl}/public/playlist/${playlistId}`;
 
-      https.get(url, (res) => {
+      https.get(routeEndpoint(url), (res) => {
         let data = '';
 
         res.on('data', (chunk) => {
@@ -131,7 +132,7 @@ export default class NeuroKaraokeAPI {
       .replace(/\.v\d+\)?\.mp3$/, '.jpg')
       .replace(/\.mp3$/, '.jpg');
 
-    return imageUrl;
+    return routeEndpoint(imageUrl);
   }
 
   /**

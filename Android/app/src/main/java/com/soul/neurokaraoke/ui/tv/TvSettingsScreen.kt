@@ -66,6 +66,7 @@ fun TvSettingsScreen(onClose: () -> Unit) {
     val gapless by SettingsRepository.gaplessPlayback.collectAsState()
     val autoPlay by SettingsRepository.autoPlay.collectAsState()
     val normalize by SettingsRepository.normalizeVolume.collectAsState()
+    val chinaEndpoints by SettingsRepository.chinaEndpoints.collectAsState()
     val currentLanguage by LocaleManager.currentLanguage.collectAsState()
     val devUnlocked by SettingsRepository.devOptionsUnlocked.collectAsState()
     val neurolingsCounts by SettingsRepository.neurolingsCounts.collectAsState()
@@ -119,6 +120,13 @@ fun TvSettingsScreen(onClose: () -> Unit) {
             ) { SettingsRepository.setNormalizeVolume(it) }
 
             Spacer(Modifier.height(24.dp))
+            TvSettingsSection("Network")
+            TvSettingsToggleRow(
+                title = "Use China endpoints",
+                subtitle = "Use .com.cn servers for new requests",
+                checked = chinaEndpoints
+            ) { SettingsRepository.setChinaEndpoints(it) }
+
             TvSettingsSection("Language")
             LocaleManager.SUPPORTED_LOCALES.forEach { locale ->
                 TvSettingsSelectRow(

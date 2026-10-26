@@ -402,7 +402,7 @@ class AutoBrowseTree(private val context: Context) {
             .setIsPlayable(true)
             .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
             .apply {
-                if (!artworkUri.isNullOrBlank()) setArtworkUri(Uri.parse(artworkUri))
+                if (!artworkUri.isNullOrBlank()) setArtworkUri(Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(artworkUri)))
             }
             .build()
         

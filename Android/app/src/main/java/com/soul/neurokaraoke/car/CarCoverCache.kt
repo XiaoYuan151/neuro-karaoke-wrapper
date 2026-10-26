@@ -27,6 +27,7 @@ class CarCoverCache(private val context: Context) {
 
     private val loader: ImageLoader by lazy {
         ImageLoader.Builder(context)
+            .okHttpClient(com.soul.neurokaraoke.data.api.EndpointHttpClient.client)
             .crossfade(false)
             .build()
     }

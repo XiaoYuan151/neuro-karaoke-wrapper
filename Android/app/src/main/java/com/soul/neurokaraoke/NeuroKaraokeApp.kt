@@ -48,6 +48,7 @@ class NeuroKaraokeApp : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
+            .okHttpClient(com.soul.neurokaraoke.data.api.EndpointHttpClient.client)
             .memoryCache {
                 MemoryCache.Builder(this)
                     .maxSizePercent(0.25)

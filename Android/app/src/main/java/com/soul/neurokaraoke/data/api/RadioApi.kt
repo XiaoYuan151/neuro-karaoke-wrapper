@@ -7,7 +7,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 
 data class RadioSong(
     val id: String,
@@ -60,7 +59,7 @@ class RadioApi {
     suspend fun fetchCurrentState(): Result<RadioState> = withContext(Dispatchers.IO) {
         try {
             // 1. Fetch main metadata
-            val url = URL(STATE_URL)
+            val url = EndpointRouter.url(STATE_URL)
             val connection = url.openConnection() as HttpURLConnection
             connection.connectTimeout = 10_000
             connection.readTimeout = 10_000
@@ -71,7 +70,7 @@ class RadioApi {
             val state = parseRadioState(json)
 
             // 2. Fetch progress from static endpoint
-            val staticUrl = URL(STATIC_NOWPLAYING_URL)
+            val staticUrl = EndpointRouter.url(STATIC_NOWPLAYING_URL)
             val staticConnection = staticUrl.openConnection() as HttpURLConnection
             staticConnection.connectTimeout = 5000
             staticConnection.readTimeout = 5000

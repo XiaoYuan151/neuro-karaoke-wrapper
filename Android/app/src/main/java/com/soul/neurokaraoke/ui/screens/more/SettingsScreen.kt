@@ -45,6 +45,7 @@ fun SettingsScreen(
     val gapless by SettingsRepository.gaplessPlayback.collectAsState()
     val normalizeVolume by SettingsRepository.normalizeVolume.collectAsState()
     val autoPlay by SettingsRepository.autoPlay.collectAsState()
+    val chinaEndpoints by SettingsRepository.chinaEndpoints.collectAsState()
     val currentLanguage by LocaleManager.currentLanguage.collectAsState()
 
     Column(
@@ -181,6 +182,14 @@ fun SettingsScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        SectionHeader(stringResource(R.string.settings_section_network))
+        SettingsToggle(
+            title = stringResource(R.string.settings_china_endpoints_title),
+            subtitle = stringResource(R.string.settings_china_endpoints_subtitle),
+            checked = chinaEndpoints,
+            onCheckedChange = { SettingsRepository.setChinaEndpoints(it) }
+        )
 
         // --- Language section ---
         SectionHeader(stringResource(R.string.settings_section_language))

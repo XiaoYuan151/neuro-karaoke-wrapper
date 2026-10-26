@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  * A video from the NeuroKaraoke gallery (`GET /api/videos`). Playback uses the Bunny
@@ -94,7 +93,7 @@ class VideoApi {
     ): Result<VideoPage> = withContext(Dispatchers.IO) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL("$API_URL/api/videos?category=$category&startIndex=$startIndex&pageSize=$pageSize")
+            val url = EndpointRouter.url("$API_URL/api/videos?category=$category&startIndex=$startIndex&pageSize=$pageSize")
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 15000

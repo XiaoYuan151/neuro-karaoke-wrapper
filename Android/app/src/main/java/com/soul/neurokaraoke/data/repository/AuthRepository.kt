@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
+import com.soul.neurokaraoke.data.api.EndpointRouter
 import java.security.MessageDigest
 import java.security.SecureRandom
 
@@ -98,7 +98,7 @@ class AuthRepository(context: Context) {
 
         try {
             // 1. Exchange code for access token with PKCE verifier
-            val tokenConn = URL(DISCORD_TOKEN_URL).openConnection() as HttpURLConnection
+            val tokenConn = EndpointRouter.url(DISCORD_TOKEN_URL).openConnection() as HttpURLConnection
             tokenConn.requestMethod = "POST"
             tokenConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
             tokenConn.connectTimeout = 15000
@@ -126,7 +126,7 @@ class AuthRepository(context: Context) {
             val accessToken = tokenJson.getString("access_token")
 
             // 2. Exchange Discord access token for NeuroKaraoke JWT
-            val exchangeConn = URL(NEUROKARAOKE_TOKEN_EXCHANGE_URL).openConnection() as HttpURLConnection
+            val exchangeConn = EndpointRouter.url(NEUROKARAOKE_TOKEN_EXCHANGE_URL).openConnection() as HttpURLConnection
             exchangeConn.requestMethod = "POST"
             exchangeConn.setRequestProperty("Content-Type", "application/json")
             exchangeConn.connectTimeout = 15000
@@ -157,7 +157,7 @@ class AuthRepository(context: Context) {
             }
 
             // 3. Fetch user info from Discord
-            val userConn = URL(DISCORD_USER_URL).openConnection() as HttpURLConnection
+            val userConn = EndpointRouter.url(DISCORD_USER_URL).openConnection() as HttpURLConnection
             userConn.connectTimeout = 15000
             userConn.readTimeout = 15000
             userConn.setRequestProperty("Authorization", "Bearer $accessToken")
@@ -258,7 +258,7 @@ class AuthRepository(context: Context) {
         withContext(Dispatchers.IO) {
             var conn: HttpURLConnection? = null
             try {
-                conn = (URL(LOGIN_URL).openConnection() as HttpURLConnection).apply {
+                conn = (EndpointRouter.url(LOGIN_URL).openConnection() as HttpURLConnection).apply {
                     requestMethod = "POST"
                     setRequestProperty("Content-Type", "application/json")
                     connectTimeout = 15000
@@ -308,7 +308,7 @@ class AuthRepository(context: Context) {
     suspend fun createQrSession(): Result<QrSession> = withContext(Dispatchers.IO) {
         var conn: HttpURLConnection? = null
         try {
-            conn = (URL(QR_SESSION_URL).openConnection() as HttpURLConnection).apply {
+            conn = (EndpointRouter.url(QR_SESSION_URL).openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Accept", "application/json")
                 connectTimeout = 15000
@@ -346,7 +346,7 @@ class AuthRepository(context: Context) {
     suspend fun pollQrSession(sessionId: String): Result<QrPoll> = withContext(Dispatchers.IO) {
         var conn: HttpURLConnection? = null
         try {
-            conn = (URL("$QR_SESSION_URL/$sessionId").openConnection() as HttpURLConnection).apply {
+            conn = (EndpointRouter.url("$QR_SESSION_URL/$sessionId").openConnection() as HttpURLConnection).apply {
                 requestMethod = "GET"
                 setRequestProperty("Accept", "application/json")
                 connectTimeout = 15000

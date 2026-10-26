@@ -60,7 +60,10 @@ object AudioCacheManager {
             .setAllowCrossProtocolRedirects(true)
 
         // Wrap with default data source for local files
-        val baseUpstreamFactory = DefaultDataSource.Factory(context, httpDataSourceFactory)
+        val routedHttpFactory = androidx.media3.datasource.ResolvingDataSource.Factory(httpDataSourceFactory) { spec ->
+            spec.withUri(android.net.Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(spec.uri.toString())))
+        }
+        val baseUpstreamFactory = DefaultDataSource.Factory(context, routedHttpFactory)
 
         // Wrap with download-aware data source if enabled
         val upstreamFactory: DataSource.Factory = if (downloadAware) {

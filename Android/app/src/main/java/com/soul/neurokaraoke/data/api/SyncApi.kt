@@ -9,7 +9,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
-import java.net.URL
 
 /**
  * API client for syncing favorites and playlists with the NeuroKaraoke server.
@@ -30,7 +29,7 @@ class SyncApi {
     suspend fun createPairingCode(jwt: String): Result<String> = withContext(Dispatchers.IO) {
         var conn: HttpURLConnection? = null
         try {
-            conn = (URL("$IDK_URL/api/auth/pairing-code").openConnection() as HttpURLConnection).apply {
+            conn = (EndpointRouter.url("$IDK_URL/api/auth/pairing-code").openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Authorization", "Bearer $jwt")
                 setRequestProperty("Content-Type", "application/json")
@@ -59,7 +58,7 @@ class SyncApi {
     suspend fun redeemPairingCode(code: String): Result<String> = withContext(Dispatchers.IO) {
         var conn: HttpURLConnection? = null
         try {
-            conn = (URL("$IDK_URL/api/auth/redeem-code").openConnection() as HttpURLConnection).apply {
+            conn = (EndpointRouter.url("$IDK_URL/api/auth/redeem-code").openConnection() as HttpURLConnection).apply {
                 requestMethod = "POST"
                 setRequestProperty("Content-Type", "application/json")
                 doOutput = true
@@ -86,7 +85,7 @@ class SyncApi {
      */
     suspend fun fetchFavorites(accessToken: String): Result<List<Song>> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/favorites/type?type=0").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/favorites/type?type=0").openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connectTimeout = 10000
@@ -116,7 +115,7 @@ class SyncApi {
      */
     suspend fun addFavorite(accessToken: String, songId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/user/favorites/$songId").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/user/favorites/$songId").openConnection() as HttpURLConnection
             conn.requestMethod = "PUT"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.setRequestProperty("Content-Length", "0")
@@ -143,7 +142,7 @@ class SyncApi {
      */
     suspend fun removeFavorite(accessToken: String, songId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/user/favorites/$songId").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/user/favorites/$songId").openConnection() as HttpURLConnection
             conn.requestMethod = "DELETE"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connectTimeout = 10000
@@ -171,7 +170,7 @@ class SyncApi {
      */
     suspend fun fetchUserPlaylists(accessToken: String): Result<List<Playlist>> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/user/playlists").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/user/playlists").openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connectTimeout = 10000
@@ -201,7 +200,7 @@ class SyncApi {
      */
     suspend fun fetchPlaylistDetails(accessToken: String, playlistId: String): Result<Playlist> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/playlist/$playlistId").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/playlist/$playlistId").openConnection() as HttpURLConnection
             conn.requestMethod = "GET"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connectTimeout = 10000
@@ -275,7 +274,7 @@ class SyncApi {
                 .put("IsSetList", false)
                 .toString()
                 .toByteArray()
-            val conn = URL("$API_URL/api/playlist/save").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/playlist/save").openConnection() as HttpURLConnection
             conn.requestMethod = "POST"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.setRequestProperty("Content-Type", "application/json")
@@ -303,7 +302,7 @@ class SyncApi {
      */
     suspend fun addSongToPlaylist(accessToken: String, playlistId: String, songId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/user/playlists/$playlistId?songId=$songId").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/user/playlists/$playlistId?songId=$songId").openConnection() as HttpURLConnection
             conn.requestMethod = "PUT"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.setRequestProperty("Content-Length", "0")
@@ -333,7 +332,7 @@ class SyncApi {
             //   - /api/user/playlists/{id}      allows PUT only  (add)
             //   - /api/playlist/{id}            allows DELETE,GET (delete WHOLE playlist)
             //   - /api/playlist/{id}/song/{sid} allows DELETE     (remove one song)
-            val conn = URL("$API_URL/api/playlist/$playlistId/song/$songId").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/playlist/$playlistId/song/$songId").openConnection() as HttpURLConnection
             conn.requestMethod = "DELETE"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connectTimeout = 10000
@@ -356,7 +355,7 @@ class SyncApi {
      */
     suspend fun deletePlaylist(accessToken: String, playlistId: String): Result<Unit> = withContext(Dispatchers.IO) {
         try {
-            val conn = URL("$API_URL/api/playlist/$playlistId").openConnection() as HttpURLConnection
+            val conn = EndpointRouter.url("$API_URL/api/playlist/$playlistId").openConnection() as HttpURLConnection
             conn.requestMethod = "DELETE"
             conn.setRequestProperty("Authorization", "Bearer $accessToken")
             conn.connectTimeout = 10000

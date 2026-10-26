@@ -1,7 +1,8 @@
-import { app, BrowserWindow, WebContentsView, ipcMain, shell, clipboard, nativeImage, Menu, net } from 'electron';
+import { app, BrowserWindow, WebContentsView, ipcMain, shell, clipboard, nativeImage, Menu, net, session } from 'electron';
 import { join } from 'path';
 import { readFileSync, writeFileSync } from 'fs';
 import config from './config.js';
+import { routeEndpoint, setChinaEndpoints } from './endpoint-router.js';
 import { DiscordManager } from './discord-manager.js';
 import { TrayManager } from './tray-manager.js';
 import NeuroKaraokeAPI from './neurokaraoke-api.js';
@@ -17,6 +18,7 @@ export type ChangeSiteFunction = (site: Site) => void;
 export type State = {
   closeToTray: boolean,
   lastSite: Site,
+  chinaEndpoints?: boolean,
 };
 const defaultState: State = {
   closeToTray: true,
@@ -201,7 +203,7 @@ function setupViewEvents(view: WebContentsView, site: Site) {
 
   // Capture song ID from the playCount API request the Blazor app makes
   view.webContents.session.webRequest.onCompleted(
-    { urls: ['*://api.neurokaraoke.com/api/songs/playCount/*'] },
+    { urls: ['*://api.neurokaraoke.com/api/songs/playCount/*', '*://api.neurokaraoke.com.cn/api/songs/playCount/*'] },
     (details) => {
       if (details.method !== 'PUT') return;
       const match = details.url.match(/\/playCount\/([0-9a-f-]{36})$/i);
@@ -540,7 +542,7 @@ function setupIpcHandlers() {
         label: 'Copy Image',
         click: async () => {
           try {
-            const response = await net.fetch(imageUrl);
+            const response = await net.fetch(routeEndpoint(imageUrl));
             const arrayBuffer = await response.arrayBuffer();
             const image = nativeImage.createFromBuffer(Buffer.from(arrayBuffer));
             if (!image.isEmpty()) {
@@ -596,6 +598,15 @@ function handleQuit() {
  * Initialize application
  */
 async function initialize() {
+  const chinaEndpoints = loadState().chinaEndpoints ?? app.getLocaleCountryCode() === 'CN';
+  setChinaEndpoints(chinaEndpoints);
+  // One hook per session handles website API, media and WebSocket requests.
+  for (const targetSession of [session.defaultSession, session.fromPartition(config.app.partition)]) {
+    targetSession.webRequest.onBeforeRequest((details, callback) => {
+      const routed = routeEndpoint(details.url);
+      callback(routed === details.url ? {} : { redirectURL: routed });
+    });
+  }
   // Show splash and check for updates before creating the main window.
   // If an update is downloaded, the app restarts — this code won't continue.
   const { lastSite } = loadState();
@@ -605,6 +616,17 @@ async function initialize() {
   createWindow();
 
   trayManager = new TrayManager(iconPath);
+  trayManager.chinaEndpoints = chinaEndpoints;
+  trayManager.onToggleChinaEndpoints = (enabled) => {
+    saveState({ chinaEndpoints: enabled });
+    setChinaEndpoints(enabled);
+    trayManager!.chinaEndpoints = enabled;
+    trayManager!.rebuildMenu();
+    apiClient?.cache.clear();
+    for (const view of Object.values(views)) {
+      if (!view.webContents.isDestroyed()) view.webContents.reloadIgnoringCache();
+    }
+  };
   try {
     trayManager.create(mainWindow!, handleQuit, switchToSite, () => {
       if (currentView && !currentView.webContents.isDestroyed()) {

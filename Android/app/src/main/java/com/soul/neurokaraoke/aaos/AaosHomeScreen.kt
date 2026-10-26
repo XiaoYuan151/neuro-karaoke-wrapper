@@ -691,7 +691,7 @@ private fun Song.toMediaItem(): MediaItem = MediaItem.Builder()
             .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
             .setIsPlayable(true)
             .apply {
-                if (coverUrl.isNotBlank()) setArtworkUri(android.net.Uri.parse(coverUrl))
+                if (coverUrl.isNotBlank()) setArtworkUri(android.net.Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(coverUrl)))
             }
             .build()
     )

@@ -1,4 +1,5 @@
 import { BrowserWindow } from 'electron';
+import { routeEndpoint } from './endpoint-router.js';
 import { autoUpdater } from 'electron-updater';
 import { Theme } from './main';
 import { getAssetPath } from './util';
@@ -64,7 +65,7 @@ export function runSplashUpdater(theme: Theme, iconPath: string): Promise<boolea
     const randomImage = images[Math.floor(Math.random() * images.length)];
 
     splashWindow.webContents.once('did-finish-load', () => {
-      splashWindow.webContents.send('splash-loading-url', randomImage);
+      splashWindow.webContents.send('splash-loading-url', routeEndpoint(randomImage));
     });
 
     function setStatus(text: string) {

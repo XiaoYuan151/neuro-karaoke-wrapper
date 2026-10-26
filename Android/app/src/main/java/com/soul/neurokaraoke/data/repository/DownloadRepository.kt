@@ -28,7 +28,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.net.HttpURLConnection
-import java.net.URL
+import com.soul.neurokaraoke.data.api.EndpointRouter
 import java.util.concurrent.atomic.AtomicInteger
 
 data class DownloadedSong(
@@ -274,7 +274,7 @@ object DownloadRepository {
     ) {
         var connection: HttpURLConnection? = null
         try {
-            val url = URL(urlString)
+            val url = EndpointRouter.url(urlString)
             connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
             connection.connectTimeout = 15000

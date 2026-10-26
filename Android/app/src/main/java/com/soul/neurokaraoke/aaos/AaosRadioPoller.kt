@@ -61,7 +61,7 @@ object AaosRadioPoller {
                         .setIsPlayable(true)
                         .apply {
                             if (current.coverUrl.isNotBlank()) {
-                                setArtworkUri(Uri.parse(current.coverUrl))
+                                setArtworkUri(Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(current.coverUrl)))
                             }
                         }
                         .build()

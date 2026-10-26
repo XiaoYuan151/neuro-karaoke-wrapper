@@ -10,6 +10,15 @@ import kotlinx.coroutines.flow.asStateFlow
 
 object SettingsRepository {
 
+    private val _chinaEndpoints = MutableStateFlow(false)
+    val chinaEndpoints: StateFlow<Boolean> = _chinaEndpoints.asStateFlow()
+
+    fun setChinaEndpoints(enabled: Boolean) {
+        prefs?.edit()?.putBoolean("china_endpoints", enabled)?.apply()
+        _chinaEndpoints.value = enabled
+        com.soul.neurokaraoke.data.api.EndpointRouter.useChinaEndpoints = enabled
+    }
+
     private var prefs: SharedPreferences? = null
 
     private val _crossfadeDuration = MutableStateFlow(0)
@@ -40,6 +49,9 @@ object SettingsRepository {
         if (prefs != null) return
         prefs = context.applicationContext.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
         prefs?.let { p ->
+            val china = p.getBoolean("china_endpoints", java.util.Locale.getDefault().country == "CN")
+            _chinaEndpoints.value = china
+            com.soul.neurokaraoke.data.api.EndpointRouter.useChinaEndpoints = china
             _crossfadeDuration.value = p.getInt(KEY_CROSSFADE, 0)
             _gaplessPlayback.value = p.getBoolean(KEY_GAPLESS, true)
             _normalizeVolume.value = p.getBoolean(KEY_NORMALIZE_VOLUME, false)

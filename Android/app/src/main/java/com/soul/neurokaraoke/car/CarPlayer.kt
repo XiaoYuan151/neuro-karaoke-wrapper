@@ -142,7 +142,7 @@ class CarPlayer(private val context: Context) {
                     .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                     .setIsPlayable(true)
                     .apply {
-                        if (coverUri != null) setArtworkUri(coverUri)
+                        if (coverUri != null) setArtworkUri(Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(coverUri.toString())))
                     }
                     .build()
             )

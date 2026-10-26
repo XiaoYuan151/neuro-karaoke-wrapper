@@ -757,7 +757,7 @@ class PlayerViewModel(
                         .setTitle(s.title)
                         .setArtist("${s.artist} • ${s.coverArtist}")
                         .setAlbumTitle(s.coverArtist)
-                        .setArtworkUri(android.net.Uri.parse(s.coverUrl))
+                        .setArtworkUri(android.net.Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(s.coverUrl)))
                         .setMediaType(MediaMetadata.MEDIA_TYPE_MUSIC)
                         .setIsBrowsable(false)
                         .setIsPlayable(true)
@@ -1417,7 +1417,7 @@ class PlayerViewModel(
                         .setIsPlayable(true)
                         .apply {
                             currentRadioSong?.coverUrl?.let { url ->
-                                setArtworkUri(android.net.Uri.parse(url))
+                                setArtworkUri(android.net.Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(url)))
                             }
                         }
                         .build()
@@ -1489,7 +1489,7 @@ class PlayerViewModel(
                                 .setIsPlayable(true)
                                 .apply {
                                     newSong.coverUrl.takeIf { it.isNotBlank() }?.let { url ->
-                                        setArtworkUri(android.net.Uri.parse(url))
+                                        setArtworkUri(android.net.Uri.parse(com.soul.neurokaraoke.data.api.EndpointRouter.route(url)))
                                     }
                                 }
                                 .build()
