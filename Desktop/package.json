@@ -11,12 +11,12 @@
   },
   "license": "GPL-3.0-only",
   "scripts": {
-    "build:pre": "yarn tsc",
-    "start": "yarn build:pre && yarn electron .",
-    "build": "yarn build:pre && yarn electron-builder",
-    "build:win": "yarn build:pre && yarn electron-builder --win",
-    "build:linux": "yarn build:pre && yarn electron-builder --linux",
-    "build:mac": "yarn build:pre && yarn electron-builder --mac"
+    "build:pre": "tsc",
+    "start": "npm run build:pre && electron .",
+    "build": "npm run build:pre && electron-builder",
+    "build:win": "npm run build:pre && electron-builder --win",
+    "build:linux": "npm run build:pre && electron-builder --linux",
+    "build:mac": "npm run build:pre && electron-builder --mac"
   },
   "keywords": [
     "karaoke",
@@ -93,6 +93,7 @@
       "useWaylandFlags": true
     },
     "mac": {
+      "identity": "-",
       "target": [
         "dmg"
       ],
@@ -106,6 +107,9 @@
     }
   },
   "resolutions": {
+    "register-scheme": "0.0.2"
+  },
+  "overrides": {
     "register-scheme": "0.0.2"
   },
   "dependencies": {
